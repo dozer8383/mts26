@@ -1,0 +1,1 @@
+gcc main.c platform/platform-raylib.c -Wall -Wextra -o mts26-0.1.0 -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
