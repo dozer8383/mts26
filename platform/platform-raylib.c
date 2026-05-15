@@ -13,7 +13,7 @@ void onInit(void) {
 }
 
 void onExit(void) {
-    UnloadTexture(texture);
+    UnloadTexture(gameLogo);
     CloseWindow();
 }
 
