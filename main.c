@@ -15,10 +15,18 @@ int main() {
         if (gameState == 0) {
             
         } else if (gameState == 1) {
-
+            ticks += getFrameTime();
+            if (ticks >= 1) {
+                ticks = 0;
+                if (!canHarvest) {
+                    canHarvest = true;
+                } else {
+                    canHarvest = false;
+                }
+            }
         }
 
-        onEndFrame(gameState,getScreenWidth(),getScreenHeight(),getFrameTime());
+        onEndFrame(gameState,year,money,canHarvest,getScreenWidth(),getScreenHeight(),getFrameTime());
     }
     onExit();
     return 0;

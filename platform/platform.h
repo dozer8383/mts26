@@ -7,7 +7,7 @@ void onInit(void);
 void onExit(void);
 
 void onBeginFrame(void);
-void onEndFrame(int state, int screenWidth, int screenHeight, float frameTime);
+void onEndFrame(int state, int year, int money, bool harvest, int screenWidth, int screenHeight, float frameTime);
 
 bool getShouldExit(void);
 
