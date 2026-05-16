@@ -14,9 +14,11 @@ int main() {
 
         if (gameState == 0) {
             
+        } else if (gameState == 1) {
+
         }
 
-        onEndFrame(gameState,getScreenWidth(),getScreenHeight());
+        onEndFrame(gameState,getScreenWidth(),getScreenHeight(),getFrameTime());
     }
     onExit();
     return 0;
