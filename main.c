@@ -1,3 +1,5 @@
+#include "stdio.h"
+#include "string.h"
 #include "platform/platform.h"
 
 int main() {
@@ -7,13 +9,30 @@ int main() {
     int incomeRate = 5;
     bool canHarvest = false;
     int gameState = 0;
+    int screenWidth = getScreenWidth();
+    int screenHeight = getScreenHeight();
 
     onInit();
     while (!getShouldExit()) {
-        onBeginFrame(gameState,year,money,canHarvest,getScreenWidth(),getScreenHeight(),getFrameTime());
+        screenWidth = getScreenWidth();
+        screenHeight = getScreenHeight();
+        float frameTime = getFrameTime();
+
+        onBeginFrame();
+
+        int parallaxX = 0-GetMouseX()/50;
+        int parallaxY = 0-GetMouseY()/50;
+        BeginDrawing();
+        ClearBackground((Color){44, 50, 25, 255});
+        if (gameState == 0) {
+            drawTitleScreen(parallaxX, parallaxY);
+        }
+        char printBuffer[16];
+        snprintf(printBuffer,sizeof(printBuffer),"%f mspf",frameTime);
+        drawText(printBuffer,screenWidth/2,screenHeight-32,24,true,WHITE);
 
         if (gameState == 0) {
-            if (getPressedRect(getScreenWidth()/2+600, getScreenHeight()/2-132, 200, 100)) {
+            if (getPressedRect(getScreenWidth()/2+590, getScreenHeight()/2-132, 280, 100)) {
                 gameState = 1;
             }
         } else if (gameState == 1) {
@@ -28,7 +47,7 @@ int main() {
             }
         }
 
-        onEndFrame(gameState,year,money,canHarvest,getScreenWidth(),getScreenHeight(),getFrameTime());
+        onEndFrame();
     }
     onExit();
     return 0;

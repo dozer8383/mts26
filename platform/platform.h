@@ -7,8 +7,8 @@
 void onInit(void);
 void onExit(void);
 
-void onBeginFrame(int state, int year, int money, bool harvest, int screenWidth, int screenHeight, float frameTime);
-void onEndFrame(int state, int year, int money, bool harvest, int screenWidth, int screenHeight, float frameTime);
+void onBeginFrame();
+void onEndFrame();
 
 Vector2 getCursorPosition(void);
 bool getPressedRect(int x, int y, int width, int height);
@@ -18,5 +18,8 @@ bool getShouldExit(void);
 int getScreenWidth(void);
 int getScreenHeight(void);
 float getFrameTime(void);
+
+void drawText(const char *text, int x, int y, int fontSize, bool centerAlign, Color color);
+void drawTitleScreen(int parallaxX, int parallaxY);
 
 #endif
