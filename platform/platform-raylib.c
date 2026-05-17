@@ -17,9 +17,6 @@ void onInit(void) {
     Image image = LoadImage("assets/logo.png");
     gameLogo = LoadTextureFromImage(image);
     UnloadImage(image);
-    image = LoadImage("assets/desktop/tree-money.png");
-    moneyTree = LoadTextureFromImage(image);
-    UnloadImage(image);
     SetTargetFPS(GetMonitorRefreshRate(0));
     screenWidth = getScreenWidth();
     screenHeight = getScreenHeight();
@@ -27,6 +24,13 @@ void onInit(void) {
     // screenHeight = 320;
     if (screenWidth == 320) {
         drawScale = 0.15;
+        image = LoadImage("assets/desktop-small/tree-money.png");
+        moneyTree = LoadTextureFromImage(image);
+        UnloadImage(image);
+    } else {
+        image = LoadImage("assets/desktop/tree-money.png");
+        moneyTree = LoadTextureFromImage(image);
+        UnloadImage(image);
     }
     center = (Vector2){screenWidth/2,screenHeight/2};
 }
@@ -86,7 +90,7 @@ void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, boo
 }
 
 void drawTitleScreen(int parallaxX, int parallaxY) {
-    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,true);
+    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.15,true);
     drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,true);
     drawText("Start New",screenWidth-600+parallaxX,screenHeight/2+parallaxY-132,96,false,WHITE);
     drawText("Continue",screenWidth-600+parallaxX,screenHeight/2+parallaxY,64,false,WHITE);
