@@ -11,6 +11,10 @@ int main() {
     int gameState = 0;
     int screenWidth = getScreenWidth();
     int screenHeight = getScreenHeight();
+    float fade = 0;
+    int fadeDirection = 1;
+    float pause = 1;
+    int queueNextState = 0;
 
     onInit();
     while (!getShouldExit()) {
@@ -25,7 +29,9 @@ int main() {
         BeginDrawing();
         ClearBackground((Color){44, 50, 25, 255});
         if (gameState == 0) {
-            drawTitleScreen(parallaxX, parallaxY);
+            drawTitleScreen(parallaxX, parallaxY, fade);
+        } else if (gameState == 1) {
+            drawGame(parallaxX, parallaxY, fade);
         }
         char printBuffer[16];
         snprintf(printBuffer,sizeof(printBuffer),"%f mspf",frameTime);
@@ -33,7 +39,8 @@ int main() {
 
         if (gameState == 0) {
             if (getPressedRect(screenWidth/2+590, screenHeight/2-132, 280, 100)) {
-                gameState = 1;
+                fadeDirection = -1;
+                queueNextState = 1;
             }
         } else if (gameState == 1) {
             ticks += getFrameTime();
@@ -45,6 +52,29 @@ int main() {
                     canHarvest = false;
                 }
             }
+        }
+
+        if (pause > 0) {
+            pause -= frameTime;
+        } else {
+            if (fadeDirection == 1) {
+                if (fade < 1) {
+                    fade += frameTime;
+                } else {
+                    fade = 1;
+                }
+            } else {
+                if (fade > 0) {
+                    fade -= frameTime;
+                } else {
+                    fade = 0;
+                }
+            }
+        }
+        if (queueNextState != gameState && fade == 0) {
+            gameState = queueNextState;
+            pause = 1;
+            fadeDirection = 1;
         }
 
         onEndFrame();

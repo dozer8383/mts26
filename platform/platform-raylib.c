@@ -23,7 +23,7 @@ void onInit(void) {
     // screenWidth = 320;
     // screenHeight = 320;
     if (screenWidth == 320) {
-        drawScale = 0.15;
+        drawScale = 0.2;
         image = LoadImage("assets/desktop-small/tree-money.png");
         moneyTree = LoadTextureFromImage(image);
         UnloadImage(image);
@@ -81,22 +81,26 @@ void drawText(const char *text, int originx, int originy, int x, int y, int font
     DrawTextEx(serif,text,(Vector2){originx+x*drawScale,originy+y*drawScale},fontSize*drawScale,1,color);
 }
 
-void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, bool centerAlign, bool coverSizing) {
+void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, float fade, bool centerAlign, bool coverSizing) {
     if (centerAlign) {
         x -= texture.width*scale/2;
         y -= texture.height*scale/2;
     }
     if (coverSizing) {
-        DrawTextureEx(texture,(Vector2){origin.x+x,origin.y+y},0,scale,WHITE);
+        DrawTextureEx(texture,(Vector2){origin.x+x,origin.y+y},0,scale,(Color){255,255,255,(int)(fade*255)});
     } else {
-        DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale*drawScale,WHITE);
+        DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale*drawScale,(Color){255,255,255,(int)(fade*255)});
     }
 }
 
-void drawTitleScreen(int parallaxX, int parallaxY) {
-    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,true,true);
-    drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,true,false);
-    drawText("Start New",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,WHITE);
-    drawText("Continue",screenWidth,screenHeight/2,-600+parallaxX,parallaxY,64,false,WHITE);
-    drawText("How to Play",screenWidth,screenHeight/2,-600+parallaxX,parallaxY+100,64,false,WHITE);
+void drawTitleScreen(int parallaxX, int parallaxY, float fade) {
+    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+    drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,fade,true,false);
+    drawText("Start New",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,(Color){255,255,255,(int)(fade*255)});
+    drawText("Continue",screenWidth,screenHeight/2,-600+parallaxX,parallaxY,64,false,(Color){255,255,255,(int)(fade*255)});
+    drawText("How to Play",screenWidth,screenHeight/2,-600+parallaxX,parallaxY+100,64,false,(Color){255,255,255,(int)(fade*255)});
+}
+
+void drawGame(int parallaxX, int parallaxY, float fade) {
+    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
 }
