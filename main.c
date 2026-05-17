@@ -13,8 +13,9 @@ int main() {
     int screenHeight = getScreenHeight();
     float fade = 0;
     int fadeDirection = 1;
-    float pause = 1;
+    float fadePause = 1;
     int queueNextState = 0;
+    float pause = 2.5;
 
     onInit();
     while (!getShouldExit()) {
@@ -26,19 +27,21 @@ int main() {
 
         int parallaxX = 0-GetMouseX()/50;
         int parallaxY = 0-GetMouseY()/50;
-        BeginDrawing();
         ClearBackground((Color){44, 50, 25, 255});
         if (gameState == 0) {
             drawTitleScreen(parallaxX, parallaxY, fade);
         } else if (gameState == 1) {
             drawGame(parallaxX, parallaxY, fade);
+            drawText("Year",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,(Color){255,255,255,(int)(fade*255)});
         }
         char printBuffer[16];
         snprintf(printBuffer,sizeof(printBuffer),"%f mspf",frameTime);
         drawText(printBuffer,screenWidth/2,screenHeight,0,-32,32,true,WHITE);
 
-        if (gameState == 0) {
-            if (getPressedRect(screenWidth/2+590, screenHeight/2-132, 280, 100)) {
+        if (gameState == -1) {
+
+        } else if (gameState == 0) {
+            if (getPressedRect(screenWidth/2+620, screenHeight/2-132, 330, 80)) {
                 fadeDirection = -1;
                 queueNextState = 1;
             }
@@ -54,8 +57,8 @@ int main() {
             }
         }
 
-        if (pause > 0) {
-            pause -= frameTime;
+        if (fadePause > 0) {
+            fadePause -= frameTime;
         } else {
             if (fadeDirection == 1) {
                 if (fade < 1) {
@@ -73,7 +76,7 @@ int main() {
         }
         if (queueNextState != gameState && fade == 0) {
             gameState = queueNextState;
-            pause = 1;
+            fadePause = 1;
             fadeDirection = 1;
         }
 
