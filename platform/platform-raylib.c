@@ -25,6 +25,9 @@ void onInit(void) {
     screenHeight = getScreenHeight();
     // screenWidth = 320;
     // screenHeight = 320;
+    if (screenWidth == 320) {
+        drawScale = 0.15;
+    }
     center = (Vector2){screenWidth/2,screenHeight/2};
 }
 
