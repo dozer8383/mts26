@@ -81,17 +81,21 @@ void drawText(const char *text, int originx, int originy, int x, int y, int font
     DrawTextEx(serif,text,(Vector2){originx+x*drawScale,originy+y*drawScale},fontSize*drawScale,1,color);
 }
 
-void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, bool centerAlign) {
+void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, bool centerAlign, bool coverSizing) {
     if (centerAlign) {
         x -= texture.width*scale/2;
         y -= texture.height*scale/2;
     }
-    DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale*drawScale,WHITE);
+    if (coverSizing) {
+        DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale,WHITE);
+    } else {
+        DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale*drawScale,WHITE);
+    }
 }
 
 void drawTitleScreen(int parallaxX, int parallaxY) {
-    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.15,true);
-    drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,true);
+    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,true,true);
+    drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,true,false);
     drawText("Start New",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,WHITE);
     drawText("Continue",screenWidth,screenHeight/2,-600+parallaxX,parallaxY,64,false,WHITE);
     drawText("How to Play",screenWidth,screenHeight/2,-600+parallaxX,parallaxY+100,64,false,WHITE);
