@@ -29,7 +29,7 @@ int main() {
         }
         char printBuffer[16];
         snprintf(printBuffer,sizeof(printBuffer),"%f mspf",frameTime);
-        drawText(printBuffer,screenWidth/2,screenHeight-32,64,true,WHITE);
+        drawText(printBuffer,screenWidth/2,screenHeight-32,32,true,WHITE);
 
         if (gameState == 0) {
             if (getPressedRect(getScreenWidth()/2+590, getScreenHeight()/2-132, 280, 100)) {

@@ -6,7 +6,10 @@
 static Font serif;
 static Texture2D gameLogo;
 static Texture2D moneyTree;
-static float drawScale = 0.5;
+static float drawScale = 1;
+static Vector2 center = {0,0};
+static int screenWidth = 0;
+static int screenHeight = 0;
 
 void onInit(void) {
     InitWindow(0,0,"Money Tree Simulator 2026");
@@ -18,6 +21,11 @@ void onInit(void) {
     moneyTree = LoadTextureFromImage(image);
     UnloadImage(image);
     SetTargetFPS(GetMonitorRefreshRate(0));
+    screenWidth = getScreenWidth();
+    screenHeight = getScreenHeight();
+    // screenWidth = 320;
+    // screenHeight = 320;
+    center = (Vector2){screenWidth/2,screenHeight/2};
 }
 
 void onExit(void) {
@@ -66,19 +74,17 @@ void drawText(const char *text, int x, int y, int fontSize, bool centerAlign, Co
     DrawTextEx(serif,text,(Vector2){x*drawScale,y*drawScale},fontSize*drawScale,1,color);
 }
 
-void drawImage(Texture2D texture, int x, int y, float scale, bool centerAlign) {
+void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, bool centerAlign) {
     if (centerAlign) {
         x -= texture.width*scale/2;
         y -= texture.height*scale/2;
     }
-    DrawTextureEx(texture,(Vector2){x*drawScale,y*drawScale},0,scale*drawScale,WHITE);
+    DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale*drawScale,WHITE);
 }
 
 void drawTitleScreen(int parallaxX, int parallaxY) {
-    int screenWidth = getScreenWidth();
-    int screenHeight = getScreenHeight();
-    drawImage(moneyTree,screenWidth/2+parallaxX/2,screenHeight/2+parallaxY/2,1.05,true);
-    drawImage(gameLogo,screenWidth/2+parallaxX-600,screenHeight/2+parallaxY,0.7,true);
+    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,true);
+    drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,true);
     drawText("Start New",screenWidth-600+parallaxX,screenHeight/2+parallaxY-132,96,false,WHITE);
     drawText("Continue",screenWidth-600+parallaxX,screenHeight/2+parallaxY,64,false,WHITE);
     drawText("How to Play",screenWidth-600+parallaxX,screenHeight/2+parallaxY+100,64,false,WHITE);
