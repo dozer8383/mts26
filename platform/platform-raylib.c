@@ -87,7 +87,7 @@ void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, boo
         y -= texture.height*scale/2;
     }
     if (coverSizing) {
-        DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale,WHITE);
+        DrawTextureEx(texture,(Vector2){origin.x+x,origin.y+y},0,scale,WHITE);
     } else {
         DrawTextureEx(texture,(Vector2){origin.x+x*drawScale,origin.y+y*drawScale},0,scale*drawScale,WHITE);
     }
