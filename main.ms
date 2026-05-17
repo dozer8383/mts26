@@ -1,4 +1,69 @@
 init = function()
+  print("Money Tree Simulator 2023")
+  print("(c) " + (1970 + floor(system.time() / 31536000000)) + " Jasper Games")
+  connection = new ServerConnection()
+  asset_manager.loadFont("playfairdisplaysemibold")
+  asset_manager.loadFont("poppinssemibold")
+  game = object
+    name = "New Farm"
+    year = 1999
+    perclick = 5
+    perseason = 0
+    trees = 1
+    money = 10
+    season = 0
+    repellant = 0
+    largestsum = 0
+    costs = object
+      tree = 15
+      repellant = 3
+      fertilizer = 200
+      worker = 1000
+    end
+    display = object
+      tree = "15"
+      repellant = "3"
+      fertilizer = "200"
+      worker = "1000"
+      money = "10"
+    end
+    ver = 0
+    gen = 0
+  end
+  transition = object
+    active = 0
+    activate = function(color, gstateto, ostateto, speed)
+      transition.color = color
+      transition.alpha = 0
+      transition.active = 1
+      transition.speed = speed/60
+      transition.gstateto = gstateto
+      transition.ostateto = ostateto
+    end
+    update = function()
+      if transition.alpha != 1 then
+        if transition.active == 1 then transition.alpha += transition.speed end
+        if transition.active == -1 then transition.alpha -= transition.speed end
+      end
+      if transition.alpha >= 1 then
+        gamestate = transition.gstateto
+        onlinestate = transition.ostateto
+        transition.active = -1
+      end
+      if transition.alpha <= 0 and transition.active == -1 then
+        transition.alpha = 0
+        transition.active = 0
+      end
+    end
+  end
+  timer = 60*3
+  seasons = [
+    "spring",
+    "summer",
+    "autumn",
+    "winter"
+  ]
+  gamestate = 0
   checkRectMouseHover = function(x, y, width, height)
     local hover = true
     if mouse.x < (x - width/2) then hover = false end
@@ -7,7 +72,9 @@ init = function()
     if mouse.y > (y + height/2) then hover = false end
     return hover
   end
-  mtsRound = function(value)
+  rightAlign = screen.width / 2
+  leftAlign = 0 - (screen.width / 2)
+  moneyRound = function(value)
     if value >= 1000000000000000000000 then
       value = round(value / 100000000000000000000)
       value = value/10 + " s"
@@ -19,212 +86,315 @@ init = function()
       value = value/10 + " q"
     elsif value >= 1000000000000 then
       value = round(value / 100000000000)
-      value = value/10 + " t"
+      value = value/10 + " T"
     elsif value >= 1000000000 then
       value = round(value / 100000000)
-      value = value/10 + " b"
+      value = value/10 + " B"
     elsif value >= 1000000 then
       value = round(value / 100000)
-      value = value/10 + " m"
+      value = value/10 + " M"
     end
     return value
   end
-  hovertime = 0
-  fade = 0
-  introslide = 0
-  year = 2000
-  weather = 0
-  money = 10
-  ticks = 0
-  income = 5
-  if storage.get("hasPlayedBefore") == 0 then
-    gamescreen = "intro"
-    storage.set("hasPlayedBefore",1)
-  else
-    gamescreen = "title"
-  end
-  asset_manager.loadFont("playfairdisplayitalic")
-  mouse.x = 0
-  mouse.y = 0
 end
 
 update = function()
-  parallaxX = 0-mouse.x/50
-  parallaxY = 0-mouse.y/50
-  if screen.isFontReady("playfairdisplayitalic") == false then
-    fade = 0
-  elsif gamescreen == "intro" then
-    frame += 1
-    if frame < 100 then
-      introslide = 0
-      fade += 0.01
-    elsif frame > 200 and frame < 300 then
-      fade += 0.01
-    elsif frame > 400 and frame < 450 then
-      fade = 0
-      introslide = 1
-    elsif frame > 450 and frame < 550 then
-      fade += 0.01
-    elsif frame > 550 and frame < 650 then
-      fade += 0.01
-    elsif frame > 750 and frame < 800 then
-      fade = 0
-      introslide = 2
-    elsif frame > 800 and frame < 850 then
-      fade += 0.02
-    elsif frame > 850 then
-      gamescreen = "title"
-    end
-  elsif gamescreen == "title" then
-    if fade > 0 then
-      fade -= 0.01
-    end
-    if checkRectMouseHover(screen.width/4+parallaxX,30+parallaxY,70,20) then
-      hovertime += (60-hovertime)/5
-      selection = 0
-      if mouse.left then
-        gamescreen = "game"
-        fade = 1
+  transition.update()
+  if gamestate == 1 then
+    game.display.tree = moneyRound(game.costs.tree)
+    game.display.repellant = moneyRound(game.costs.repellant)
+    game.display.fertilizer = moneyRound(game.costs.fertilizer)
+    game.display.worker = moneyRound(game.costs.worker)
+    game.display.money = moneyRound(game.money)
+    if timer < 1 then
+      timer = 60*2
+      game.season += 1
+      if moneybugattack == 1 then
+        moneybugattack = 0
       end
-    elsif checkRectMouseHover(screen.width/4+parallaxX,parallaxY,70,20) then
-      hovertime += (50-hovertime)/5
-      selection = 1
-    elsif checkRectMouseHover(screen.width/4+parallaxX,-30+parallaxY,70,20) then
-      hovertime += (40-hovertime)/5
-      selection = 2
+      if random.nextInt(100) < 5 then
+        moneybugattack = 1
+      end
+      if moneybugattack == 1 then
+        if game.repellant > 0 then
+          game.repellant -= 1
+        else
+          moneytime = 0
+          game.trees = round(game.trees/1.05)
+        end
+      end
+      game.money += game.perseason*game.perclick
+      userdata.money = game.largestsum
+      // system.javascript("this.encodedURI = `https://leaderboard.jmeow.net/moneytreesim2023/set/?name=${encodeURIComponent(player.runtime.vm.context.global.userdata.username)}&score=${encodeURIComponent(player.runtime.vm.context.global.userdata.money)}`")
+      // request.get(encodedURI)
+      // connection.send(userdata)
     else
-      hovertime += (0-hovertime)/5
+      timer -= 1 
     end
-  elsif gamescreen == "game" then
-    if fade > 0 then
-      fade -= 0.02
-    end
-    ticks += 1
-    if ticks % (10*60) == 0 then
-      harvest = 1-harvest
-      year += 1
-    end
-    if not showshop then
-      if checkRectMouseHover(0+parallaxX,-80+parallaxY,30,30) then
-        hovertime += (60-hovertime)/5
-        if mouse.left and harvest then
-          harvest = false
-          money += income
-        end
-      elsif checkRectMouseHover(-30+parallaxX,-80+parallaxY,20,20) then
-        hovertime += (50-hovertime)/5
-        selection = 1
-      elsif checkRectMouseHover(30+parallaxX,-80+parallaxY,20,20) then
-        hovertime += (40-hovertime)/5
-        if mouse.press and mouse.left then
-          showshop = 1-showshop
-        end
+    if game.season > 3 then
+      game.season = 0
+      game.year += 1
+      if moneytime == 0 then
+        moneytime = 1
       else
-        hovertime += (0-hovertime)/5
+        moneytime = 0
       end
+    end
+    if checkRectMouseHover(0,0,150,150) and mouse.left and moneytime == 1 then
+      game.money += game.perclick * game.trees
+      moneytime = 0
+    end
+    if keyboard.press.SPACE and moneytime == 1 then
+      game.money += game.perclick * game.trees
+      moneytime = 0
+    end
+    if checkRectMouseHover(0,-80,100,30) and mouse.left and moneytime == 1 then
+      game.money += game.perclick * game.trees
+      moneytime = 0
+    end
+    if checkRectMouseHover(leftAlign + 40, 80, 70, 30) and mouse.press then
+      system.javascript("this.JSONgame = JSON.stringify(player.runtime.vm.context.global.game)")
+      encodedgame = base64.encode(JSONgame)
+      system.file.save( encodedgame, game.name )
+    end
+    if checkRectMouseHover(rightAlign-60,80,60,30) and mouse.press then
+      if shopopen == 1 then
+        shopopen = 0
+      else
+        shopopen = 1
+      end
+    end
+    if checkRectMouseHover(leftAlign + 110, 80, 60, 30) and mouse.press then
+      if help == 1 then
+        help = 0
+      else
+        help = 1
+      end
+    end
+    if shopopen == 1 then
+      if checkRectMouseHover(rightAlign - 60, 50, 100, 15) and mouse.press or keyboard.press.N then
+        if game.money >= game.costs.tree then
+          game.trees += 1
+          game.money -= game.costs.tree
+          game.costs.tree *= 1.035
+          game.costs.tree = round(game.costs.tree)
+        end
+      end
+      if checkRectMouseHover(rightAlign - 60, 30, 100, 15) and mouse.press or keyboard.press.M then
+        if game.money >= game.costs.repellant then
+          game.repellant += 1
+          game.money -= game.costs.repellant
+          game.costs.repellant += 1
+          game.costs.repellant = round(game.costs.repellant)
+        end
+      end
+      if checkRectMouseHover(rightAlign - 60, 10, 100, 15) and mouse.press or keyboard.press.F then
+        if game.money >= game.costs.fertilizer then
+          game.perclick *= 1.5
+          game.money -= game.costs.fertilizer
+          game.costs.fertilizer *= 1.7
+          game.costs.fertilizer = round(game.costs.fertilizer)
+          game.perclick = round(game.perclick)
+        end
+      end
+      if checkRectMouseHover(rightAlign - 60, -10, 100, 15) and mouse.press or keyboard.press.H then
+        if game.money >= game.costs.worker then
+          game.perseason += 1
+          game.money -= game.costs.worker
+          game.costs.worker *= 1.05
+          game.costs.worker = round(game.costs.worker)
+          game.perseason = round(game.perseason)
+        end
+      end
+    end
+    if game.largestsum >= 100000000000 then
+      if currentsong.getDuration() != 12.826083 then
+        currentsong.stop()
+      end
+      currentsong = audio.playMusic( "theworldisending", 0.25 )
+    elsif game.largestsum >= 100000000 then
+      if currentsong.getDuration() != 16.039167 then
+        currentsong.stop()
+      end
+      currentsong = audio.playMusic( "almostharvesttime", 0.25 )
+    elsif game.largestsum >=1000000 then
+      if currentsong.getDuration() != 19.226083 then
+        currentsong.stop()
+      end
+      currentsong = audio.playMusic( "multitreelionaire", 0.25 )
+    elsif game.largestsum >= 10000 then
+      if currentsong.getDuration() != 15.986958 then
+        currentsong.stop()
+      end
+      currentsong = audio.playMusic( "thegreatbigorchard", 0.25 )
     else
-      if checkRectMouseHover((0-screen.width/2)+30+parallaxX,-80+parallaxY,20,20) and mouse.left then
-        showshop = false
+      if round(currentsong.getDuration()) != 36 then
+        currentsong.stop()
       end
+      currentsong = audio.playMusic( "moneygrowsontrees", 0.25 )
+    end
+  elsif gamestate == 0 then
+    currentsong.stop()
+    if checkRectMouseHover(0,-50, 70, 10) and mouse.press then
+      gamestate = 1
+    end
+    if checkRectMouseHover(0,-70, 70, 10) and mouse.press then
+      system.file.load( ["txt"] )
+    end
+  end
+  game.perclick = round(game.perclick)
+  game.money = round(game.money)
+  if game.money > game.largestsum then
+    game.largestsum = game.money
+  end
+  if system.file.loaded then
+    for file in system.file.loaded
+      corruptsave = 0
+      jsontoparse = base64.decode(file.content)
+      system.javascript("this.decodedgame = JSON.parse(player.runtime.vm.context.global.jsontoparse)")
+      game = decodedgame
+      gamestate = 1
     end
   end
 end
 
 draw = function()
-  screen.clear("#2C3219")
-  screen.setPixelated(0)
-  screen.setFont("playfairdisplayitalic")
-  if gamescreen == "title" then
-    screen.setAlpha(1)
-    screen.drawSprite("mts25sunny",mouse.x/100,mouse.y/100,screen.width+20)
-    screen.drawSprite("mts25logo",0-screen.width/4+parallaxX,0+parallaxY,150)
-    screen.drawText("(c) 2025 Jasper Games",0-screen.width/2+parallaxX+50,-80+parallaxY,5,"#E6E1CF")
-    if hovertime > 0 then
-      if selection == 0 then
-        screen.fillRect(screen.width/4+parallaxX+hovertime/2-29,25+parallaxY,hovertime,2,"#2C3219")
-      elsif selection == 1 then
-        screen.fillRect(screen.width/4+parallaxX+hovertime/2-26,-5+parallaxY,hovertime,2,"#2C3219")
-      elsif selection == 2 then
-        screen.fillRect(screen.width/4+parallaxX+hovertime/2-23,-35.5+parallaxY,hovertime,2,"#2C3219")
+  screen.setFont("playfairdisplaysemibold")
+  screen.clear()
+  if screen.isFontReady( "playfairdisplaysemibold" ) then
+    if gamestate == 0 then
+      if titleframe < 30 then titleframe += 0.2 else titleframe = 0 end
+      if titleframe < 10 then
+        screen.drawSprite("000"+floor(titleframe)+"min", 0, 0, screen.width)
+      else
+        screen.drawSprite("00"+floor(titleframe)+"min", 0, 0, screen.width)
       end
-    end
-    screen.setColor("#E6E1CF")
-    screen.drawText("Start New",screen.width/4+parallaxX,30+parallaxY,10)
-    screen.drawText("Continue",screen.width/4+parallaxX,parallaxY,10)
-    screen.drawText("Settings",screen.width/4+parallaxX,-30+parallaxY,10)
-    screen.setAlpha(max(0,fade))
-    screen.fillRect(0,0,screen.width,screen.height,"#fff")
-  elsif gamescreen == "intro" then
-    if introslide == 0 then
-      screen.setAlpha(fade)
-      screen.drawSprite("jaspergameslogo",0,0,1042/10,134/10)
-      screen.setAlpha(max(0,fade-1))
-      screen.drawText("Presents",0,-17,6,"#A8B778")
-    elsif introslide == 1 then
-      screen.setAlpha(fade)
-      screen.drawText("Money Tree Simulator",-10,0,7,"#fff")
-      screen.setAlpha(max(0,fade-1))
-      screen.drawText("2025",47,0,7,"#A8B778")
-    elsif introslide == 2 then
-      screen.setAlpha(fade)
-      screen.fillRect(0,0,screen.width,screen.height,"#fff")
-    end
-  elsif gamescreen == "game" then
-    if showshop then
-      screen.setRotation(10)
-      for y = -5 to 5
-        for x = -5 to 5
-          screen.drawSprite("checkeredloading",(x*49+parallaxX/2),y*50+parallaxY/2,50,50)
+      screen.setDrawAnchor(-1,0)
+      // screen.drawText("Your Username: "+storage.get("username"), leftAlign + 5, 90, 5, "#222")
+      screen.drawText("Money", -45, 20, 15, "#fff")
+      screen.drawText("Tree", -45, 2.5, 15, "#fff")
+      screen.drawText("Simulator", -45, -15, 15, "#fff")
+      screen.drawText("2023", 5, -30, 15, "#fff")
+      screen.setDrawAnchor(0,0)
+      screen.drawText("New Game", 0, -50, 10, "#fff")
+      screen.drawText("Load Game", 0, -70, 10, "#fff")
+    elsif gamestate == 1 then
+      screen.drawSprite("background"+seasons[game.season], 0, 0, screen.width)
+      for i = 1 to game.trees
+        if game.trees  < 5 then
+          screen.drawSprite( "tree"+seasons[game.season], ((i-1)*60 - (game.trees-1)*30)/(game.trees*.2), 0, 200)
+        else
+          screen.drawSprite( "tree"+seasons[game.season], ((i-1)*60 - (game.trees-1)*30)/(game.trees*.2), 0, 200/(game.trees*.2))
+        end
+        if moneytime == 1 then
+          if game.trees  < 5 then
+            screen.drawSprite( "dollaroverlay", ((i-1)*60 - (game.trees-1)*30)/(game.trees*.2), 0, 200)
+          else
+            screen.drawSprite( "dollaroverlay", ((i-1)*60 - (game.trees-1)*30)/(game.trees*.2), 0, 200/(game.trees*.2))
+          end
         end
       end
-      screen.setRotation(0)
-      screen.drawSprite("backicon",(0-screen.width/2)+30+parallaxX,-80+parallaxY,20)
-    else
+      if moneybugattack == 1 then
+        screen.drawSprite( "hit", 0, 0, screen.width, screen.height )
+        screen.drawSprite( "moneybug", 0, 40, 120, 70 )
+        screen.drawText("Moneybug Attack!", 0, -20, 10, "#fff")
+      end
+      screen.setDrawAnchor(-1, 0)
+      screen.drawText(game.year, leftAlign + 10, 0, 20, "#fff")
+      screen.drawText(seasons[game.season], leftAlign + 10, -20, 7, "#fff")
+      screen.setDrawAnchor(1, 0)
+      if game.trees == 1 then
+        screen.drawText(game.trees +" tree", rightAlign-10, -60, 7, "#fff")
+      else
+        screen.drawText(game.trees +" trees", rightAlign-10, -60, 7, "#fff")
+      end
+      if game.repellant == 1 then
+        screen.drawText(game.repellant+" bottle of repellant", rightAlign-10, -75, 7, "#fff")
+      else
+        screen.drawText(game.repellant+" bottles of repellant", rightAlign-10, -75, 7, "#fff")
+      end
+      if game.perseason == 1 then
+        screen.drawText(game.perseason +" worker", rightAlign-10, -90, 7, "#fff")
+      else
+        screen.drawText(game.perseason +" workers", rightAlign-10, -90, 7, "#fff")
+      end
+      screen.setDrawAnchor(0, 0)
+      if moneytime == 1 then
+        screen.fillRoundRect(0,-80,100,30,4,"#52f")
+        screen.drawText("Harvest", 0, -80, 10, "#fff")
+      else
+        screen.fillRoundRect(0,-80,100,30,4,"#115")
+        screen.drawText("Harvest", 0, -80, 10, "#555")
+      end
+      screen.setDrawAnchor(-1,0)
+      //screen.fillRoundRect(leftAlign+10,-80,230,60,4,"#fff")
+      game.moneystring = "" + game.money
+      screen.drawText("$"+game.display.money, leftAlign+10, -70, 20, "#fff")
+      screen.drawText("$"+moneyRound(game.perclick)+" per tree", leftAlign+10, -90, 8, "#fff")
+      screen.setDrawAnchor(0, 0)
+      if shopopen == 1 then
+        screen.fillRoundRect(rightAlign - 60, 25, 100, 100, 4, "#efeffa")
+        if game.money >= game.costs.tree then
+          screen.setColor("#222")
+        else
+          screen.setColor("#2226")
+        end
+        screen.drawText("New Money Tree - $"+game.display.tree, rightAlign - 60, 50, 5)
+        if game.money >= game.costs.repellant then
+          screen.setColor("#222")
+        else
+          screen.setColor("#2226")
+        end
+        screen.drawText("Moneybug Repellant - $"+game.display.repellant, rightAlign - 60, 30, 5)
+        if game.money >= game.costs.fertilizer then
+          screen.setColor("#222")
+        else
+          screen.setColor("#2226")
+        end
+        screen.drawText("Fertilizer - $"+game.display.fertilizer, rightAlign - 60, 10, 5)
+        if game.money >= game.costs.worker then
+          screen.setColor("#222")
+        else
+          screen.setColor("#2226")
+        end
+        screen.drawText("Hire Field Worker - $"+game.display.worker, rightAlign - 60, -10, 5)
+      end
+      screen.fillRoundRect(leftAlign + 40, 80, 70, 30, 4, "#fff")
+      screen.drawText("Save", leftAlign + 47, 79, 10, "#222")
+      screen.drawSprite( "save_icon", leftAlign + 20, 80, 16, 16 )
+      screen.fillRoundRect(rightAlign - 60, 80, 100, 30, 4, "#fff")
+      screen.drawText("Shop", rightAlign - 60, 80, 10, "#222")
+      if help == 1 then
+        screen.fillRect(0,0,screen.width,screen.height,"#0006")
+        screen.fillRoundRect(0,-15,200,150,4,"#fff")
+        screen.drawText("How to Play",0,45,8,"#222")
+        text = [
+          "Money Tree Simulator is all about making as much money as"
+          "possible! To start, wait for the Harvest button to light up, and"
+          "click it or press the spacebar to harvest the money. Now, click"
+          "the shop to open it and purchase a New Money Tree. That's it!"
+          "Other info:",
+          "Moneybug Repellant - prevents loss of trees and money in raids",
+          "Fertilizer - increases amount of money produced by each tree",
+          "Workers - makes money per tree every season"
+          "Tip: You can press the first letter of any option on the shop"
+          "menu as a hotkey. It can be much faster than clicking!"
+          ""
+          "Click the Help button again to exit."
+        ]
+        for i = 0 to text.length - 1
+          screen.drawText(text[i],0,30-(i*10),5,"#222")
+        end
+      end
+      screen.fillRoundRect(leftAlign + 110, 80, 60, 30, 4,"#fff")
+      screen.drawText("Help", leftAlign + 110, 80, 10, "#222")
+    end
+    if transition.active != 0 then
+      screen.setAlpha(transition.alpha)
+      screen.fillRect(0,0,screen.width, screen.height, transition.color)
       screen.setAlpha(1)
-      if harvest then
-        if weather == 0 then
-          screen.drawSprite("mts25sunnymoney",mouse.x/100,mouse.y/100,screen.width+20)
-        elsif weather == 1 then
-          screen.drawSprite("mts25rainymoney",mouse.x/100,mouse.y/100,screen.width+20)
-        else 
-          screen.drawSprite("mts25snowymoney",mouse.x/100,mouse.y/100,screen.width+20)
-        end
-      else
-        if weather == 0 then
-          screen.drawSprite("mts25sunny",mouse.x/100,mouse.y/100,screen.width+20)
-        elsif weather == 1 then
-          screen.drawSprite("mts25rainy",mouse.x/100,mouse.y/100,screen.width+20)
-        else 
-          screen.drawSprite("mts25snowy",mouse.x/100,mouse.y/100,screen.width+20)
-        end
-      end
-      screen.setAlpha(1-fade)
-      if harvest then
-        screen.drawSprite("harveston",0+parallaxX,-80+parallaxY,30)
-      else
-        screen.drawSprite("harvestoff",0+parallaxX,-80+parallaxY,30)
-      end
-      screen.drawSprite("infoicon",-30+parallaxX,-80+parallaxY,20)
-      screen.drawSprite("saveicon",-60+parallaxX,-80+parallaxY,20)
-      screen.drawSprite("shopicon",30+parallaxX,-80+parallaxY,20)
-      screen.drawText("$"+mtsRound(money),0+parallaxX,-50+parallaxY,15,"#fff")
-      screen.drawText("Year "+year,0-screen.width/2+50+parallaxX,-80+parallaxY,10)
-      
-      screen.setAlpha(max(0,fade))
-      screen.drawSprite("logo",0-screen.width/4+parallaxX,0+parallaxY,100)
-      screen.drawSprite("copyright",0-screen.width/4+parallaxX,-70+parallaxY,80)
-      if hovertime > 0 then
-        if selection == 0 then
-          screen.fillRect(screen.width/4+parallaxX+hovertime/2-33,25+parallaxY,hovertime,2,"#fff")
-        elsif selection == 1 then
-          screen.fillRect(screen.width/4+parallaxX+hovertime/2-28,-5+parallaxY,hovertime,2,"#fff")
-        elsif selection == 2 then
-          screen.fillRect(screen.width/4+parallaxX+hovertime/2-23,-33.5+parallaxY,hovertime,2,"#fff")
-        end
-      end
-      screen.drawSprite("startnew",screen.width/4+parallaxX,30+parallaxY,70)
-      screen.drawSprite("continue",screen.width/4+parallaxX,parallaxY,60)
-      screen.drawSprite("settings",screen.width/4+parallaxX,-30+parallaxY,50)
     end
+  else
+    screen.drawText("Loading Money Tree Simulator 2023....",0,0,10,"#fff")
   end
 end
