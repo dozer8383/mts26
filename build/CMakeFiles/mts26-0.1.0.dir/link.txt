@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file=CMakeFiles/mts26-0.1.0.dir/link.d "CMakeFiles/mts26-0.1.0.dir/main.c.o" "CMakeFiles/mts26-0.1.0.dir/platform/platform-raylib.c.o" -o bin/mts26-0.1.0  /usr/lib/libraylib.so.6.0.0 -lGL -lm -lpthread -ldl -lrt -lX11

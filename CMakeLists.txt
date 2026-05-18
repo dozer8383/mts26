@@ -1,0 +1,42 @@
+cmake_minimum_required(VERSION 3.10)
+project(mts26 VERSION 0.1.0 LANGUAGES C)
+
+# Set C standard
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# Output directory for binaries
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Find raylib
+find_package(raylib REQUIRED)
+
+# Add the executable
+add_executable(mts26-0.1.0
+    main.c
+    platform/platform-raylib.c
+)
+
+# Link raylib and system libraries
+target_link_libraries(mts26-0.1.0 PRIVATE
+    raylib
+    GL
+    m
+    pthread
+    dl
+    rt
+    X11
+)
+
+# Compiler flags matching build.sh
+target_compile_options(mts26-0.1.0 PRIVATE
+    -Wall
+    -Wextra
+    -Wno-unused-variable
+    -Wno-unused-parameter
+)
+
+# Include directories
+target_include_directories(mts26-0.1.0 PRIVATE
+    ${CMAKE_SOURCE_DIR}
+)

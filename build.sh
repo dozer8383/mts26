@@ -1,4 +1,5 @@
-gcc main.c platform/platform-raylib.c -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -o bin/mts26-0.1.0 -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+#!/bin/bash
+cmake .
 if [ $? -ne 0 ]; then
     echo "Build failed"
     exit 1
