@@ -1,3 +1,0 @@
-/home/jackm/Documents/code/mts26/CMakeFiles/mts26-0.1.0.dir
-/home/jackm/Documents/code/mts26/CMakeFiles/edit_cache.dir
-/home/jackm/Documents/code/mts26/CMakeFiles/rebuild_cache.dir
