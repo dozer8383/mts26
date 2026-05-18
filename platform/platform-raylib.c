@@ -3,6 +3,13 @@
 #include "stdio.h"
 #include "string.h"
 
+// Helper to build asset paths
+static char asset_buffer[512];
+static const char* assetPath(const char* filename) {
+    snprintf(asset_buffer, sizeof(asset_buffer), "%s%s", ASSET_PATH, filename);
+    return asset_buffer;
+}
+
 static Font serif;
 static Texture2D gameLogo;
 static Texture2D tree;
@@ -20,8 +27,8 @@ static int screenHeight = 0;
 
 void onInit(void) {
     InitWindow(0,0,"Money Tree Simulator 2026");
-    serif = LoadFontEx("assets/PlayfairDisplay-MediumItalic.ttf",128,0,0);
-    Image image = LoadImage("assets/logo.png");
+    serif = LoadFontEx(assetPath("PlayfairDisplay-MediumItalic.ttf"),128,0,0);
+    Image image = LoadImage(assetPath("logo.png"));
     gameLogo = LoadTextureFromImage(image);
     UnloadImage(image);
     SetTargetFPS(GetMonitorRefreshRate(0));
@@ -31,30 +38,30 @@ void onInit(void) {
     // screenHeight = 320;
     if (screenWidth == 320) {
         drawScale = 0.2;
-        image = LoadImage("assets/desktop-small/tree-money.png");
+        image = LoadImage(assetPath("desktop-small/tree-money.png"));
         moneyTree = LoadTextureFromImage(image);
         UnloadImage(image);
     } else {
-        image = LoadImage("assets/desktop/tree-money.png");
+        image = LoadImage(assetPath("desktop/tree-money.png"));
         moneyTree = LoadTextureFromImage(image);
         UnloadImage(image);
-        image = LoadImage("assets/desktop/tree.png");
+        image = LoadImage(assetPath("desktop/tree.png"));
         tree = LoadTextureFromImage(image);
         UnloadImage(image);
     }
-    image = LoadImage("assets/harveston.png");
+    image = LoadImage(assetPath("harveston.png"));
     harvestOn = LoadTextureFromImage(image);
     UnloadImage(image);
-    image = LoadImage("assets/harvestoff.png");
+    image = LoadImage(assetPath("harvestoff.png"));
     harvestOff = LoadTextureFromImage(image);
     UnloadImage(image);
-    image = LoadImage("assets/shopicon.png");
+    image = LoadImage(assetPath("shopicon.png"));
     shop = LoadTextureFromImage(image);
     UnloadImage(image);
-    image = LoadImage("assets/backicon.png");
+    image = LoadImage(assetPath("backicon.png"));
     back = LoadTextureFromImage(image);
     UnloadImage(image);
-    image = LoadImage("assets/saveicon.png");
+    image = LoadImage(assetPath("saveicon.png"));
     save = LoadTextureFromImage(image);
     UnloadImage(image);
     center = (Vector2){screenWidth/2,screenHeight/2};

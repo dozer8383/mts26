@@ -20,7 +20,6 @@ int getScreenHeight(void);
 float getFrameTime(void);
 
 void drawText(const char *text, int originx, int originy, int x, int y, int fontSize, bool centerAlign, float fade);
-void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, float fade, bool centerAlign, bool coverSizing);
 void drawTitleScreen(int parallaxX, int parallaxY, float fade);
 void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest);
 

@@ -40,3 +40,8 @@ target_compile_options(mts26-0.1.0 PRIVATE
 target_include_directories(mts26-0.1.0 PRIVATE
     ${CMAKE_SOURCE_DIR}
 )
+
+# Define asset path as compile-time macro
+target_compile_definitions(mts26-0.1.0 PRIVATE
+    ASSET_PATH="${CMAKE_SOURCE_DIR}/assets/"
+)
