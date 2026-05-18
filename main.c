@@ -5,7 +5,8 @@
 int main() {
     int year = 2000;
     int money = 10;
-    int ticks = 0;
+    float ticks = 0;
+    int trees = 1;
     int incomeRate = 5;
     bool canHarvest = false;
     int gameState = 0;
@@ -25,35 +26,40 @@ int main() {
 
         onBeginFrame();
 
-        int parallaxX = 0-GetMouseX()/50;
-        int parallaxY = 0-GetMouseY()/50;
+        int parallaxX = (screenWidth/100)-GetMouseX()/50;
+        int parallaxY = (screenHeight/100)-GetMouseY()/50;
         ClearBackground((Color){44, 50, 25, 255});
         if (gameState == 0) {
             drawTitleScreen(parallaxX, parallaxY, fade);
         } else if (gameState == 1) {
-            drawGame(parallaxX, parallaxY, fade);
-            drawText("Year",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,(Color){255,255,255,(int)(fade*255)});
+            drawGame(parallaxX, parallaxY, fade, canHarvest);
+            char yearString[16];
+            snprintf(yearString,sizeof(yearString),"Year %d",year);
+            drawText(yearString,0,screenHeight,160+parallaxX,parallaxY-160,96,false,fade);
+            char moneyString[32];
+            snprintf(moneyString,sizeof(moneyString),"$%d",money);
+            drawText(moneyString,screenWidth/2,screenHeight,parallaxX,parallaxY-360,128,true,fade);
         }
-        char printBuffer[16];
-        snprintf(printBuffer,sizeof(printBuffer),"%f mspf",frameTime);
-        drawText(printBuffer,screenWidth/2,screenHeight,0,-32,32,true,WHITE);
+        char debugBuffer[48];
+        snprintf(debugBuffer,sizeof(debugBuffer),"%f mspf | %f ticks",frameTime,ticks);
+        drawText(debugBuffer,screenWidth/2,screenHeight,0,-32,32,true,1);
 
         if (gameState == -1) {
 
         } else if (gameState == 0) {
-            if (getPressedRect(screenWidth/2+620, screenHeight/2-132, 330, 80)) {
+            if (getPressedRect(screenWidth/2+660, screenHeight/2-110, 330, 80)) {
                 fadeDirection = -1;
                 queueNextState = 1;
             }
         } else if (gameState == 1) {
             ticks += getFrameTime();
-            if (ticks >= 1) {
+            if (ticks >= 6) {
                 ticks = 0;
-                if (!canHarvest) {
-                    canHarvest = true;
-                } else {
-                    canHarvest = false;
-                }
+                canHarvest = true-canHarvest;
+            }
+            if (getPressedRect(screenWidth/2-72, screenHeight-224, 156, 156) && canHarvest) {
+                canHarvest = false;
+                money += incomeRate*trees;
             }
         }
 
