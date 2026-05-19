@@ -3,12 +3,11 @@
 #include "stdio.h"
 #include "string.h"
 
-// Helper to build asset paths
-static char asset_buffer[512];
-static const char* assetPath(const char* filename) {
-    snprintf(asset_buffer, sizeof(asset_buffer), "%s%s", ASSET_PATH, filename);
-    return asset_buffer;
-}
+// static char asset_buffer[512];
+// static const char* assetPath(const char* filename) {
+//     snprintf(asset_buffer, sizeof(asset_buffer), "%s%s", ASSET_PATH, filename);
+//     return asset_buffer;
+// }
 
 static Font serif;
 
@@ -33,7 +32,7 @@ static int screenWidth = 0;
 static int screenHeight = 0;
 
 Texture2D loadTexture(const char *fileName) {
-    Image image = LoadImage(assetPath(fileName));
+    Image image = LoadImage(fileName);
     return LoadTextureFromImage(image);
 }
 
@@ -47,22 +46,22 @@ void onInit(void) {
         drawScale = 0.2;
     }
 
-    moneyTreeSpring = loadTexture("desktop/tree-spring-money.png");
-    moneyTreeSummer = loadTexture("desktop/tree-summer-money.png");
-    moneyTreeFall = loadTexture("desktop/tree-fall-money.png");
+    moneyTreeSpring = loadTexture("assets/desktop/tree-spring-money.png");
+    moneyTreeSummer = loadTexture("assets/desktop/tree-summer-money.png");
+    moneyTreeFall = loadTexture("assets/desktop/tree-fall-money.png");
 
-    treeSpring = loadTexture("desktop/tree-spring.png");
-    treeSummer = loadTexture("desktop/tree-summer.png");
-    treeFall = loadTexture("desktop/tree-fall.png");
-    treeWinter = loadTexture("desktop/tree-winter.png");
+    treeSpring = loadTexture("assets/desktop/tree-spring.png");
+    treeSummer = loadTexture("assets/desktop/tree-summer.png");
+    treeFall = loadTexture("assets/desktop/tree-fall.png");
+    treeWinter = loadTexture("assets/desktop/tree-winter.png");
 
-    gameLogo = loadTexture("logo.png");
-    harvestOff = loadTexture("harvestoff.png");
-    harvestOn = loadTexture("harveston.png");
-    back = loadTexture("backicon.png");
-    save = loadTexture("saveicon.png");
-    shop = loadTexture("shopicon.png");
-    serif = LoadFontEx(assetPath("PlayfairDisplay-MediumItalic.ttf"),128,0,0);
+    gameLogo = loadTexture("assets/logo.png");
+    harvestOff = loadTexture("assets/harvestoff.png");
+    harvestOn = loadTexture("assets/harveston.png");
+    back = loadTexture("assets/backicon.png");
+    save = loadTexture("assets/saveicon.png");
+    shop = loadTexture("assets/shopicon.png");
+    serif = LoadFontEx("assets/PlayfairDisplay-MediumItalic.ttf",128,0,0);
 
     center = (Vector2){screenWidth/2,screenHeight/2};
 }
