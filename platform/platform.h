@@ -21,6 +21,6 @@ float getFrameTime(void);
 
 void drawText(const char *text, int originx, int originy, int x, int y, int fontSize, bool centerAlign, float fade);
 void drawTitleScreen(int parallaxX, int parallaxY, float fade);
-void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest);
+void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season);
 
 #endif

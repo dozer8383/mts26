@@ -11,9 +11,16 @@ static const char* assetPath(const char* filename) {
 }
 
 static Font serif;
+
+static Texture2D treeSpring;
+static Texture2D treeSummer;
+static Texture2D treeFall;
+static Texture2D treeWinter;
+static Texture2D moneyTreeSpring;
+static Texture2D moneyTreeSummer;
+static Texture2D moneyTreeFall;
+
 static Texture2D gameLogo;
-static Texture2D tree;
-static Texture2D moneyTree;
 static Texture2D harvestOn;
 static Texture2D harvestOff;
 static Texture2D shop;
@@ -25,45 +32,38 @@ static Vector2 center = {0,0};
 static int screenWidth = 0;
 static int screenHeight = 0;
 
+Texture2D loadTexture(const char *fileName) {
+    Image image = LoadImage(assetPath(fileName));
+    return LoadTextureFromImage(image);
+}
+
 void onInit(void) {
     InitWindow(0,0,"Money Tree Simulator 2026");
-    serif = LoadFontEx(assetPath("PlayfairDisplay-MediumItalic.ttf"),128,0,0);
-    Image image = LoadImage(assetPath("logo.png"));
-    gameLogo = LoadTextureFromImage(image);
-    UnloadImage(image);
     SetTargetFPS(GetMonitorRefreshRate(0));
+
     screenWidth = getScreenWidth();
     screenHeight = getScreenHeight();
-    // screenWidth = 320;
-    // screenHeight = 320;
     if (screenWidth == 320) {
         drawScale = 0.2;
-        image = LoadImage(assetPath("desktop-small/tree-money.png"));
-        moneyTree = LoadTextureFromImage(image);
-        UnloadImage(image);
-    } else {
-        image = LoadImage(assetPath("desktop/tree-money.png"));
-        moneyTree = LoadTextureFromImage(image);
-        UnloadImage(image);
-        image = LoadImage(assetPath("desktop/tree.png"));
-        tree = LoadTextureFromImage(image);
-        UnloadImage(image);
     }
-    image = LoadImage(assetPath("harveston.png"));
-    harvestOn = LoadTextureFromImage(image);
-    UnloadImage(image);
-    image = LoadImage(assetPath("harvestoff.png"));
-    harvestOff = LoadTextureFromImage(image);
-    UnloadImage(image);
-    image = LoadImage(assetPath("shopicon.png"));
-    shop = LoadTextureFromImage(image);
-    UnloadImage(image);
-    image = LoadImage(assetPath("backicon.png"));
-    back = LoadTextureFromImage(image);
-    UnloadImage(image);
-    image = LoadImage(assetPath("saveicon.png"));
-    save = LoadTextureFromImage(image);
-    UnloadImage(image);
+
+    moneyTreeSpring = loadTexture("desktop/tree-spring-money.png");
+    moneyTreeSummer = loadTexture("desktop/tree-summer-money.png");
+    moneyTreeFall = loadTexture("desktop/tree-fall-money.png");
+
+    treeSpring = loadTexture("desktop/tree-spring.png");
+    treeSummer = loadTexture("desktop/tree-summer.png");
+    treeFall = loadTexture("desktop/tree-fall.png");
+    treeWinter = loadTexture("desktop/tree-winter.png");
+
+    gameLogo = loadTexture("logo.png");
+    harvestOff = loadTexture("harvestoff.png");
+    harvestOn = loadTexture("harveston.png");
+    back = loadTexture("backicon.png");
+    save = loadTexture("saveicon.png");
+    shop = loadTexture("shopicon.png");
+    serif = LoadFontEx(assetPath("PlayfairDisplay-MediumItalic.ttf"),128,0,0);
+
     center = (Vector2){screenWidth/2,screenHeight/2};
 }
 
@@ -126,19 +126,35 @@ void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, flo
 }
 
 void drawTitleScreen(int parallaxX, int parallaxY, float fade) {
-    drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+    drawImage(moneyTreeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
     drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,fade,true,false);
     drawText("Start New",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,fade);
     drawText("Continue",screenWidth,screenHeight/2,-600+parallaxX,parallaxY,64,false,fade);
     drawText("How to Play",screenWidth,screenHeight/2,-600+parallaxX,parallaxY+100,64,false,fade);
 }
 
-void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest) {
+void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season) {
     if (canHarvest) {
-        drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        if (season == 0) {
+            drawImage(moneyTreeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        } else if (season == 1) {
+            drawImage(moneyTreeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        } else if (season == 2) {
+            drawImage(moneyTreeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        } else {
+            drawImage(moneyTreeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        }
         drawImage(harvestOn,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     } else {
-        drawImage(tree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        if (season == 0) {
+            drawImage(treeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        } else if (season == 1) {
+            drawImage(treeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        } else if (season == 2) {
+            drawImage(treeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        } else {
+            drawImage(treeWinter,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+        }
         drawImage(harvestOff,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     }
     drawImage(shop,(Vector2){screenWidth/2,screenHeight},parallaxX-180,parallaxY-128,0.49,fade,true,false);

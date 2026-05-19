@@ -36,7 +36,7 @@ int main() {
         if (gameState == 0) {
             drawTitleScreen(parallaxX, parallaxY, fade);
         } else if (gameState == 1) {
-            drawGame(parallaxX, parallaxY, fade, canHarvest);
+            drawGame(parallaxX, parallaxY, fade, canHarvest, season);
             char yearString[16];
             if (season == 0) {
                 snprintf(yearString,sizeof(yearString),"Spring %d",year);
@@ -65,13 +65,15 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 1) {
-                growthRate = (-cos(timeInSeason)+1)/2;
+                growthRate = (-cos(timeInSeason)+1);
+            } else if (season == 0 || season == 2) {
+                growthRate = (-cos(timeInSeason)+1)/10;
             } else {
                 growthRate = 0;
             }
             ticks += getFrameTime()*growthRate;
-            timeInSeason += getFrameTime();
-            if (ticks >= 5) {
+            timeInSeason += getFrameTime()/2;
+            if (ticks >= 3) {
                 ticks = 0;
                 canHarvest = true-canHarvest;
             }
@@ -83,7 +85,7 @@ int main() {
             if (timeInSeason >= 2*PI) {
                 timeInSeason = 0;
                 season++;
-                if (season >= 3) {
+                if (season > 3) {
                     season = 0;
                     year++;
                 }
