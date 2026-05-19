@@ -12,13 +12,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(external/raylib)
 
 # Add the executable
-add_executable(mts26-0.1.0
+add_executable(mts26
     main.c
     platform/platform-raylib.c
 )
 
 # Link raylib and system libraries
-target_link_libraries(mts26-0.1.0 PRIVATE
+target_link_libraries(mts26 PRIVATE
     raylib
     GL
     m
@@ -29,7 +29,7 @@ target_link_libraries(mts26-0.1.0 PRIVATE
 )
 
 # Compiler flags matching build.sh
-target_compile_options(mts26-0.1.0 PRIVATE
+target_compile_options(mts26 PRIVATE
     -Wall
     -Wextra
     -Wno-unused-variable
@@ -37,11 +37,11 @@ target_compile_options(mts26-0.1.0 PRIVATE
 )
 
 # Include directories
-target_include_directories(mts26-0.1.0 PRIVATE
+target_include_directories(mts26 PRIVATE
     ${CMAKE_SOURCE_DIR}
 )
 
 # Define asset path as compile-time macro
-target_compile_definitions(mts26-0.1.0 PRIVATE
+target_compile_definitions(mts26 PRIVATE
     ASSET_PATH="${CMAKE_SOURCE_DIR}/assets/"
 )

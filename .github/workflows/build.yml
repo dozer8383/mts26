@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -18,18 +18,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install Linux dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential cmake libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libgl1-mesa-dev
-
-      - name: Install macOS dependencies
-        if: runner.os == 'macOS'
-        run: |
-          brew install cmake
-
-      - name: Setup MSYS2
+      - name: Windows: Install Dependencies
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
@@ -37,25 +26,31 @@ jobs:
           install: >-
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-cmake
+            make
 
-      - name: Configure Windows
+      - name: Linux: Install dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential cmake libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libgl1-mesa-dev
+
+      - name: Windows: Configure
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: cmake -B build
+      
+      - name: Linux: Configure
+        if: runner.os == 'Linux'
+        run: cmake -B build
 
-      - name: Build Windows
+      - name: Windows: Build
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: cmake --build build
 
-      - name: Configure
-        run: cmake -B build
-
-      - name: Build
+      - name: Linux: Build
+        if: runner.os == 'Linux'
         run: cmake --build build --config Release
-
-      - name: Check paths
-        run: ls *
       
       - name: Prepare package
         run: |
@@ -66,5 +61,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mts26-0.1.0
+          name: mts26-${{ runner.os }}-0.1.0
           path: package/  
