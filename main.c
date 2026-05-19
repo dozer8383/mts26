@@ -64,9 +64,11 @@ int main() {
                 queueNextState = 1;
             }
         } else if (gameState == 1) {
-            if (season == 1) {
+            if (season == 0) {
+                growthRate = (-cos(timeInSeason)+1.2)/5;
+            } else if (season == 1) {
                 growthRate = (-cos(timeInSeason)+1.1)/2;
-            } else if (season == 0 || season == 2) {
+            } else if (season == 2) {
                 growthRate = (-cos(timeInSeason)+1.4)/10;
             } else {
                 growthRate = 0;
@@ -77,7 +79,7 @@ int main() {
                 ticks = 0;
                 canHarvest = true-canHarvest;
             }
-            if (getPressedRect(screenWidth/2, screenHeight, -72, -224, 156, 156,false) && canHarvest) {
+            if (getPressedRect(screenWidth/2, screenHeight, parallaxX, parallaxY-128, 160, 165, true) && canHarvest) {
                 canHarvest = false;
                 money += incomeRate*trees;
                 ticks = 0;

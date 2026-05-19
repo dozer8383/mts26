@@ -86,7 +86,8 @@ Vector2 getCursorPosition(void) {
 
 bool getPressedRect(int originx, int originy, int x, int y, int width, int height, bool centerAlign) {
     if (centerAlign) {
-        x -= width/2;
+        x -= width*drawScale/2;
+        y -= height*drawScale/2;
     }
     DrawRectangle(originx+x*drawScale, originy+y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
     return CheckCollisionPointRec(GetMousePosition(),(Rectangle){originx+x*drawScale,originy+y*drawScale,width*drawScale,height*drawScale}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
