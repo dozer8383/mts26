@@ -20,12 +20,6 @@ add_executable(mts26
 # Link raylib and system libraries
 target_link_libraries(mts26 PRIVATE
     raylib
-    GL
-    m
-    pthread
-    dl
-    rt
-    X11
 )
 
 # Compiler flags matching build.sh
