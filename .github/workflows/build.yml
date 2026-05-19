@@ -20,7 +20,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt update
-          sudo apt install -y build-essential cmake libraylib-dev
+          sudo apt install -y build-essential cmake
 
       - name: Install macOS dependencies
         if: runner.os == 'macOS'
@@ -35,7 +35,6 @@ jobs:
           install: >-
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-raylib
 
       - name: Configure Windows
         if: runner.os == 'Windows'

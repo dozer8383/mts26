@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Find raylib
-find_package(raylib REQUIRED)
+add_subdirectory(external/raylib)
 
 # Add the executable
 add_executable(mts26-0.1.0
