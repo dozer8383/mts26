@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -60,5 +60,5 @@ jobs:
       - name: Prepare package
         run: |
           mkdir package
-          cp build/mts26 package/
+          cp build/bin/* package/
           cp -r assets package/
