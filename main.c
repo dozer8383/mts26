@@ -59,7 +59,7 @@ int main() {
         if (gameState == -1) {
 
         } else if (gameState == 0) {
-            if (getPressedRect(screenWidth/2+660, screenHeight/2-110, 330, 80)) {
+            if (getPressedRect(screenWidth, screenHeight/2, parallaxX-600, parallaxY-132, 330, 96, false)) {
                 fadeDirection = -1;
                 queueNextState = 1;
             }
@@ -77,7 +77,7 @@ int main() {
                 ticks = 0;
                 canHarvest = true-canHarvest;
             }
-            if (getPressedRect(screenWidth/2-72, screenHeight-224, 156, 156) && canHarvest) {
+            if (getPressedRect(screenWidth/2, screenHeight, -72, -224, 156, 156,false) && canHarvest) {
                 canHarvest = false;
                 money += incomeRate*trees;
                 ticks = 0;

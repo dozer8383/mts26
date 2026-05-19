@@ -11,7 +11,7 @@ void onBeginFrame(void);
 void onEndFrame(void);
 
 Vector2 getCursorPosition(void);
-bool getPressedRect(int x, int y, int width, int height);
+bool getPressedRect(int originx, int originy, int x, int y, int width, int height, bool centerAlign);
 
 bool getShouldExit(void);
 

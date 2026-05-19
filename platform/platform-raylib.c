@@ -42,6 +42,7 @@ void onInit(void) {
 
     screenWidth = getScreenWidth();
     screenHeight = getScreenHeight();
+
     if (screenWidth == 320) {
         drawScale = 0.2;
     }
@@ -83,9 +84,12 @@ Vector2 getCursorPosition(void) {
     return GetMousePosition();
 }
 
-bool getPressedRect(int x, int y, int width, int height) {
-    // DrawRectangle(x*drawScale, y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
-    return CheckCollisionPointRec(GetMousePosition(),(Rectangle){x*drawScale,y*drawScale,width*drawScale,height*drawScale}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+bool getPressedRect(int originx, int originy, int x, int y, int width, int height, bool centerAlign) {
+    if (centerAlign) {
+        x -= width/2;
+    }
+    DrawRectangle(originx+x*drawScale, originy+y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
+    return CheckCollisionPointRec(GetMousePosition(),(Rectangle){originx+x*drawScale,originy+y*drawScale,width*drawScale,height*drawScale}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
 
 bool getShouldExit(void) {
@@ -125,7 +129,7 @@ void drawImage(Texture2D texture, Vector2 origin, int x, int y, float scale, flo
 }
 
 void drawTitleScreen(int parallaxX, int parallaxY, float fade) {
-    drawImage(moneyTreeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+    drawImage(moneyTreeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
     drawImage(gameLogo,(Vector2){0,screenHeight/2},parallaxX+600,parallaxY,0.7,fade,true,false);
     drawText("Start New",screenWidth,screenHeight/2,-600+parallaxX,parallaxY-132,96,false,fade);
     drawText("Continue",screenWidth,screenHeight/2,-600+parallaxX,parallaxY,64,false,fade);
