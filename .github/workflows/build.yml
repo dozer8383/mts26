@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Windows: Install Dependencies
+      - name: Windows - Install Dependencies
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
@@ -28,27 +28,27 @@ jobs:
             mingw-w64-x86_64-cmake
             make
 
-      - name: Linux: Install dependencies
+      - name: Linux - Install Dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt update
           sudo apt install -y build-essential cmake libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libgl1-mesa-dev
 
-      - name: Windows: Configure
+      - name: Windows - Configure
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: cmake -B build
       
-      - name: Linux: Configure
+      - name: Linux - Configure
         if: runner.os == 'Linux'
         run: cmake -B build
 
-      - name: Windows: Build
+      - name: Windows - Build
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: cmake --build build
 
-      - name: Linux: Build
+      - name: Linux - Build
         if: runner.os == 'Linux'
         run: cmake --build build --config Release
       
