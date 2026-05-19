@@ -8,4 +8,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo "Build succeeded"
-exec bin/mts26-0.1.0
+cd ..
+mkdir -p package
+cp build/bin/* package/
+cp -r assets package/
+exec package/mts26-0.1.0
