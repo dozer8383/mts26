@@ -65,15 +65,15 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 1) {
-                growthRate = (-cos(timeInSeason)+1);
+                growthRate = (-cos(timeInSeason)+1.5)/2;
             } else if (season == 0 || season == 2) {
-                growthRate = (-cos(timeInSeason)+1)/10;
+                growthRate = (-cos(timeInSeason)+1.2)/10;
             } else {
                 growthRate = 0;
             }
             ticks += getFrameTime()*growthRate;
-            timeInSeason += getFrameTime()/2;
-            if (ticks >= 3) {
+            timeInSeason += getFrameTime()/3;
+            if (ticks >= 2) {
                 ticks = 0;
                 canHarvest = true-canHarvest;
             }
@@ -89,6 +89,9 @@ int main() {
                     season = 0;
                     year++;
                 }
+            }
+            if (canHarvest && season == 3) {
+                canHarvest = false;
             }
         }
 
