@@ -85,7 +85,7 @@ Vector2 getCursorPosition(void) {
 }
 
 bool getPressedRect(int x, int y, int width, int height) {
-    DrawRectangle(x*drawScale, y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
+    // DrawRectangle(x*drawScale, y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
     return CheckCollisionPointRec(GetMousePosition(),(Rectangle){x*drawScale,y*drawScale,width*drawScale,height*drawScale}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
 
@@ -136,9 +136,11 @@ void drawTitleScreen(int parallaxX, int parallaxY, float fade) {
 void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest) {
     if (canHarvest) {
         drawImage(moneyTree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
-        drawImage(harvestOn,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,1,true,false);
+        drawImage(harvestOn,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     } else {
         drawImage(tree,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
-        drawImage(harvestOff,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,1,true,false);
+        drawImage(harvestOff,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     }
+    drawImage(shop,(Vector2){screenWidth/2,screenHeight},parallaxX-180,parallaxY-128,0.49,fade,true,false);
+    drawImage(save,(Vector2){screenWidth/2,screenHeight},parallaxX+180,parallaxY-128,0.49,fade,true,false);
 }

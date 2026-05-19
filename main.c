@@ -1,12 +1,16 @@
 #include "stdio.h"
 #include "string.h"
 #include "platform/platform.h"
+#include "math.h"
 
 int main() {
     int year = 2000;
     int money = 10;
     float ticks = 0;
     int trees = 1;
+    int season = 0;
+    float growthRate;
+    float timeInSeason = 0;
     int incomeRate = 5;
     bool canHarvest = false;
     int gameState = 0;
@@ -34,14 +38,22 @@ int main() {
         } else if (gameState == 1) {
             drawGame(parallaxX, parallaxY, fade, canHarvest);
             char yearString[16];
-            snprintf(yearString,sizeof(yearString),"Year %d",year);
+            if (season == 0) {
+                snprintf(yearString,sizeof(yearString),"Spring %d",year);
+            } else if (season == 1) {
+                snprintf(yearString,sizeof(yearString),"Summer %d",year);
+            } else if (season == 2) {
+                snprintf(yearString,sizeof(yearString),"Autumn %d",year);
+            } else {
+                snprintf(yearString,sizeof(yearString),"Winter %d",year);
+            }
             drawText(yearString,0,screenHeight,160+parallaxX,parallaxY-160,96,false,fade);
             char moneyString[32];
             snprintf(moneyString,sizeof(moneyString),"$%d",money);
             drawText(moneyString,screenWidth/2,screenHeight,parallaxX,parallaxY-360,128,true,fade);
         }
-        char debugBuffer[48];
-        snprintf(debugBuffer,sizeof(debugBuffer),"%f mspf | %f ticks",frameTime,ticks);
+        char debugBuffer[128];
+        snprintf(debugBuffer,sizeof(debugBuffer),"%f mspf | %f ticks | %f time | %f growth",frameTime,ticks,timeInSeason,growthRate);
         drawText(debugBuffer,screenWidth/2,screenHeight,0,-32,32,true,1);
 
         if (gameState == -1) {
@@ -52,14 +64,29 @@ int main() {
                 queueNextState = 1;
             }
         } else if (gameState == 1) {
-            ticks += getFrameTime();
-            if (ticks >= 6) {
+            if (season == 1) {
+                growthRate = (-cos(timeInSeason)+1)/2;
+            } else {
+                growthRate = 0;
+            }
+            ticks += getFrameTime()*growthRate;
+            timeInSeason += getFrameTime();
+            if (ticks >= 5) {
                 ticks = 0;
                 canHarvest = true-canHarvest;
             }
             if (getPressedRect(screenWidth/2-72, screenHeight-224, 156, 156) && canHarvest) {
                 canHarvest = false;
                 money += incomeRate*trees;
+                ticks = 0;
+            }
+            if (timeInSeason >= 2*PI) {
+                timeInSeason = 0;
+                season++;
+                if (season >= 3) {
+                    season = 0;
+                    year++;
+                }
             }
         }
 

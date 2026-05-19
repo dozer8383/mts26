@@ -19,4 +19,9 @@ CMakeFiles/mts26-0.1.0.dir/main.c.o: \
  /usr/include/strings.h \
  /home/jackm/Documents/code/mts26/platform/platform.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stdbool.h \
- /usr/include/raylib.h
+ /usr/include/raylib.h /usr/include/math.h \
+ /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
+ /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
+ /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
+ /usr/include/bits/mathcalls-helper-functions.h \
+ /usr/include/bits/mathcalls.h
