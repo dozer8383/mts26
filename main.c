@@ -65,9 +65,9 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 1) {
-                growthRate = (-cos(timeInSeason)+1.5)/2;
+                growthRate = (-cos(timeInSeason)+1.1)/2;
             } else if (season == 0 || season == 2) {
-                growthRate = (-cos(timeInSeason)+1.2)/10;
+                growthRate = (-cos(timeInSeason)+1.4)/10;
             } else {
                 growthRate = 0;
             }
