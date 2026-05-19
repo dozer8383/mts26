@@ -53,3 +53,12 @@ jobs:
 
       - name: Build
         run: cmake --build build --config Release
+
+      - name: Check paths
+        run: ls *
+      
+      - name: Prepare package
+        run: |
+          mkdir package
+          cp build/mts26 package/
+          cp -r assets package/
