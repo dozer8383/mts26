@@ -140,24 +140,24 @@ void drawTitleScreen(int parallaxX, int parallaxY, float fade) {
 void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season) {
     if (canHarvest) {
         if (season == 0) {
-            drawImage(moneyTreeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(moneyTreeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         } else if (season == 1) {
-            drawImage(moneyTreeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(moneyTreeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         } else if (season == 2) {
-            drawImage(moneyTreeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(moneyTreeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         } else {
-            drawImage(moneyTreeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(moneyTreeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         }
         drawImage(harvestOn,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     } else {
         if (season == 0) {
-            drawImage(treeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(treeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         } else if (season == 1) {
-            drawImage(treeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(treeSummer,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         } else if (season == 2) {
-            drawImage(treeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(treeFall,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         } else {
-            drawImage(treeWinter,center,parallaxX/2,parallaxY/2,1.05,1,true,true);
+            drawImage(treeWinter,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
         }
         drawImage(harvestOff,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     }
