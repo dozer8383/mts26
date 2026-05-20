@@ -30,6 +30,7 @@ static float drawScale = 1;
 static Vector2 center = {0,0};
 static int screenWidth = 0;
 static int screenHeight = 0;
+static bool debugMenuShow = false;
 
 Texture2D loadTexture(const char *fileName) {
     Image image = LoadImage(fileName);
@@ -89,7 +90,7 @@ bool getPressedRect(int originx, int originy, int x, int y, int width, int heigh
         x -= width*drawScale/2;
         y -= height*drawScale/2;
     }
-    DrawRectangle(originx+x*drawScale, originy+y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
+    if (debugMenuShow) DrawRectangle(originx+x*drawScale, originy+y*drawScale, width*drawScale, height*drawScale, (Color){255,0,0,50});
     return CheckCollisionPointRec(GetMousePosition(),(Rectangle){originx+x*drawScale,originy+y*drawScale,width*drawScale,height*drawScale}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
 
@@ -137,7 +138,7 @@ void drawTitleScreen(int parallaxX, int parallaxY, float fade) {
     drawText("How to Play",screenWidth,screenHeight/2,-600+parallaxX,parallaxY+100,64,false,fade);
 }
 
-void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season) {
+void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season, bool shopOpen) {
     if (canHarvest) {
         if (season == 0) {
             drawImage(moneyTreeSpring,center,parallaxX/2,parallaxY/2,1.05,1,true,false);
@@ -161,6 +162,17 @@ void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int sea
         }
         drawImage(harvestOff,(Vector2){screenWidth/2,screenHeight},parallaxX,parallaxY-128,0.5,fade,true,false);
     }
-    drawImage(shop,(Vector2){screenWidth/2,screenHeight},parallaxX-180,parallaxY-128,0.49,fade,true,false);
+    if (shopOpen) {
+        drawImage(back,(Vector2){screenWidth/2,screenHeight},parallaxX-180,parallaxY-128,0.49,fade,true,false);
+    } else {
+        drawImage(shop,(Vector2){screenWidth/2,screenHeight},parallaxX-180,parallaxY-128,0.49,fade,true,false);
+    }
     drawImage(save,(Vector2){screenWidth/2,screenHeight},parallaxX+180,parallaxY-128,0.49,fade,true,false);
+}
+
+bool showDebugMenu() {
+    if (IsKeyPressed(KEY_F3)) {
+        debugMenuShow = 1-debugMenuShow;
+    }
+    return debugMenuShow;
 }

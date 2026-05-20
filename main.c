@@ -13,6 +13,7 @@ int main() {
     float timeInSeason = 0;
     int incomeRate = 5;
     bool canHarvest = false;
+    bool shopOpen = false;
     int gameState = 0;
     int screenWidth = getScreenWidth();
     int screenHeight = getScreenHeight();
@@ -36,7 +37,7 @@ int main() {
         if (gameState == 0) {
             drawTitleScreen(parallaxX, parallaxY, fade);
         } else if (gameState == 1) {
-            drawGame(parallaxX, parallaxY, fade, canHarvest, season);
+            drawGame(parallaxX, parallaxY, fade, canHarvest, season, shopOpen);
             char yearString[16];
             if (season == 0) {
                 snprintf(yearString,sizeof(yearString),"Spring %d",year);
@@ -52,9 +53,6 @@ int main() {
             snprintf(moneyString,sizeof(moneyString),"$%d",money);
             drawText(moneyString,screenWidth/2,screenHeight,parallaxX,parallaxY-360,128,true,fade);
         }
-        char debugBuffer[128];
-        snprintf(debugBuffer,sizeof(debugBuffer),"%f mspf | %f ticks | %f time | %f growth",frameTime,ticks,timeInSeason,growthRate);
-        drawText(debugBuffer,screenWidth/2,screenHeight,0,-32,32,true,1);
 
         if (gameState == -1) {
 
@@ -65,11 +63,11 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 0) {
-                growthRate = (-cos(timeInSeason)+1.2)/5;
+                growthRate = (-cos(timeInSeason)+1)/5+0.2;
             } else if (season == 1) {
-                growthRate = (-cos(timeInSeason)+1.1)/2;
+                growthRate = (-cos(timeInSeason)+1)/2+0.1;
             } else if (season == 2) {
-                growthRate = (-cos(timeInSeason)+1.4)/10;
+                growthRate = (-cos(timeInSeason)+1)/10+0.4;
             } else {
                 growthRate = 0;
             }
@@ -83,6 +81,9 @@ int main() {
                 canHarvest = false;
                 money += incomeRate*trees;
                 ticks = 0;
+            }
+            if (getPressedRect(screenWidth/2, screenHeight, parallaxX-180, parallaxY-128, 122, 122, true)) {
+                shopOpen = 1-shopOpen;
             }
             if (timeInSeason >= 2*PI) {
                 timeInSeason = 0;
@@ -118,6 +119,12 @@ int main() {
             gameState = queueNextState;
             fadePause = 1;
             fadeDirection = 1;
+        }
+
+        if (showDebugMenu()) {
+            char debugBuffer[128];
+            snprintf(debugBuffer,sizeof(debugBuffer),"%f mspf | %f ticks | %f time | %f growth",frameTime,ticks,timeInSeason,growthRate);
+            drawText(debugBuffer,screenWidth/2,screenHeight,0,-32,32,true,1);   
         }
 
         onEndFrame();
