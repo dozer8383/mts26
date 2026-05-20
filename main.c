@@ -65,9 +65,9 @@ int main() {
             if (season == 0) {
                 growthRate = (-cos(timeInSeason)+1)/5+0.2;
             } else if (season == 1) {
-                growthRate = (-cos(timeInSeason)+1)/2+0.1;
+                growthRate = (-cos(timeInSeason)+1)/2;
             } else if (season == 2) {
-                growthRate = (-cos(timeInSeason)+1)/10+0.4;
+                growthRate = (-cos(timeInSeason)+1)/10;
             } else {
                 growthRate = 0;
             }
