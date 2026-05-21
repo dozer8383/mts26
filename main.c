@@ -5,9 +5,11 @@
 
 int main() {
     int year = 2000;
-    int money = 10;
+    double money = 10;
     float ticks = 0;
     int trees = 1;
+    int fertilizer = 0;
+    int water = 0;
     int season = 0;
     float growthRate;
     float timeInSeason = 0;
@@ -22,6 +24,8 @@ int main() {
     float fadePause = 1;
     int queueNextState = 0;
     float pause = 2.5;
+    float shopPrices[4] = {0.25,6,50,2000};
+    char *shopItems[4] = {"Water","Fertilizer","Plant tree","HarvestBot 2000"};
 
     onInit();
     while (!getShouldExit()) {
@@ -37,7 +41,7 @@ int main() {
         if (gameState == 0) {
             drawTitleScreen(parallaxX, parallaxY, fade);
         } else if (gameState == 1) {
-            drawGame(parallaxX, parallaxY, fade, canHarvest, season, shopOpen);
+            drawGame(parallaxX, parallaxY, fade, canHarvest, season, shopOpen, shopPrices, shopItems);
             char yearString[16];
             if (season == 0) {
                 snprintf(yearString,sizeof(yearString),"Spring %d",year);
@@ -48,10 +52,10 @@ int main() {
             } else {
                 snprintf(yearString,sizeof(yearString),"Winter %d",year);
             }
-            drawText(yearString,0,screenHeight,160+parallaxX,parallaxY-160,96,false,fade);
+            drawText(yearString,0,screenHeight,160+parallaxX,parallaxY-160,64,false,fade,true);
             char moneyString[32];
-            snprintf(moneyString,sizeof(moneyString),"$%d",money);
-            drawText(moneyString,screenWidth/2,screenHeight,parallaxX,parallaxY-360,128,true,fade);
+            snprintf(moneyString,sizeof(moneyString),"$%.2lf",money);
+            drawText(moneyString,screenWidth/2,screenHeight,parallaxX,parallaxY-360,128,true,fade,true);
         }
 
         if (gameState == -1) {
@@ -63,11 +67,11 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 0) {
-                growthRate = (-cos(timeInSeason)+1)/5+0.2;
+                growthRate = (-cos(timeInSeason)+1)/(7-fmin(water*0.05,6.5))+fertilizer*0.009;
             } else if (season == 1) {
-                growthRate = (-cos(timeInSeason)+1)/2;
+                growthRate = (sin(timeInSeason/2))/(1-fmin(water*0.05,0.5))+fertilizer*0.016;
             } else if (season == 2) {
-                growthRate = (-cos(timeInSeason)+1)/10;
+                growthRate = (-cos(timeInSeason)+1)/(10-fmin(water*0.3,9.5));
             } else {
                 growthRate = 0;
             }
@@ -75,9 +79,9 @@ int main() {
             timeInSeason += getFrameTime()/3;
             if (ticks >= 2) {
                 ticks = 0;
-                canHarvest = true-canHarvest;
+                canHarvest = true;
             }
-            if (getPressedRect(screenWidth/2, screenHeight, parallaxX, parallaxY-128, 160, 165, true) && canHarvest) {
+            if (getPressedRect(screenWidth/2, screenHeight, parallaxX, parallaxY-128, 160, 165, true) && canHarvest && !shopOpen) {
                 canHarvest = false;
                 money += incomeRate*trees;
                 ticks = 0;
@@ -88,6 +92,9 @@ int main() {
             if (timeInSeason >= 2*PI) {
                 timeInSeason = 0;
                 season++;
+                if (season == 3) {
+                    water = 0;
+                }
                 if (season > 3) {
                     season = 0;
                     year++;
@@ -95,6 +102,20 @@ int main() {
             }
             if (canHarvest && season == 3) {
                 canHarvest = false;
+            }
+            if (shopOpen) {
+                for (int i = 0; i < 4; i++) {
+                    if (getPressedRect(screenWidth/2,screenHeight,parallaxX*1.5+i*180,parallaxY*1.5-128,128,128,true)) {
+                        if (money >= shopPrices[i]) {
+                            money -= shopPrices[i];
+                            if (i == 0) {
+                                shopPrices[i] *= 1.05;
+                            } else {
+                                shopPrices[i] *= 1.2;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -124,7 +145,7 @@ int main() {
         if (showDebugMenu()) {
             char debugBuffer[128];
             snprintf(debugBuffer,sizeof(debugBuffer),"%f mspf | %f ticks | %f time | %f growth",frameTime,ticks,timeInSeason,growthRate);
-            drawText(debugBuffer,screenWidth/2,screenHeight,0,-32,32,true,1);   
+            drawText(debugBuffer,screenWidth/2,screenHeight,0,-32,32,true,1,true);   
         }
 
         onEndFrame();

@@ -19,9 +19,9 @@ int getScreenWidth(void);
 int getScreenHeight(void);
 float getFrameTime(void);
 
-void drawText(const char *text, int originx, int originy, int x, int y, int fontSize, bool centerAlign, float fade);
+void drawText(const char *text, int originx, int originy, int x, int y, int fontSize, bool centerAlign, float fade, bool contrast);
 void drawTitleScreen(int parallaxX, int parallaxY, float fade);
-void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season, bool shopOpen);
+void drawGame(int parallaxX, int parallaxY, float fade, bool canHarvest, int season, bool shopOpen, float *shopPrices, char **shopItems);
 
 bool showDebugMenu();
 
