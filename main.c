@@ -1,7 +1,27 @@
 #include "stdio.h"
-#include "string.h"
+// #include "string.h"
 #include "platform/platform.h"
 #include "math.h"
+
+char abbreviatedRound(double value) {
+    char outputBuffer[16];
+    if (value >= 1000000000000000000) {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lfQ",roundf(value/10000000000000000)/100);
+    } else if (value >= 1000000000000000) {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lfq",roundf(value/10000000000000)/100);
+    } else if (value >= 1000000000000) {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lfT",roundf(value/10000000000)/100);
+    } else if (value >= 1000000000) {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lfB",roundf(value/10000000)/100);
+    } else if (value >= 1000000) {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lfM",roundf(value/10000)/100);
+    } else if (value >= 1000) {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lfk",roundf(value/10)/100);
+    } else {
+        snprintf(outputBuffer,sizeof(outputBuffer),"$%.2lf",value);
+    }
+    return *outputBuffer;
+}
 
 int main() {
     int year = 2000;
@@ -25,7 +45,7 @@ int main() {
     int queueNextState = 0;
     float pause = 2.5;
     float shopPrices[4] = {0.25,6,50,2000};
-    char *shopItems[4] = {"Water","Fertilizer","Plant tree","HarvestBot 2000"};
+    char *shopItems[4] = {"Water","Fertilizer","Plant tree","HarvestBot3000"};
 
     onInit();
     while (!getShouldExit()) {
@@ -67,11 +87,11 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 0) {
-                growthRate = (-cos(timeInSeason)+1)/(7-fmin(water*0.05,6.5))+fertilizer*0.009;
+                growthRate = (-cos(timeInSeason)+1)/(7-fmin(water*0.02,6.5))+(fertilizer*(fertilizer*0.7))*0.003;
             } else if (season == 1) {
-                growthRate = (sin(timeInSeason/2))/(1-fmin(water*0.05,0.5))+fertilizer*0.016;
+                growthRate = (sin(timeInSeason/2))/(1-fmin(water*0.04,0.5))+(fertilizer*(fertilizer*0.7))*0.004;
             } else if (season == 2) {
-                growthRate = (-cos(timeInSeason)+1)/(10-fmin(water*0.3,9.5));
+                growthRate = (-cos(timeInSeason)+1)/(10-fmin(water*0.2,9.5));
             } else {
                 growthRate = 0;
             }
@@ -113,6 +133,10 @@ int main() {
                             } else {
                                 shopPrices[i] *= 1.2;
                             }
+                            if (i == 0) {water++;}
+                            if (i == 1) {fertilizer++;}
+                            if (i == 2) {trees++;}
+                            // if (i == 3) {water++;}
                         }
                     }
                 }

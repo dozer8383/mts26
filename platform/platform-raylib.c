@@ -1,7 +1,7 @@
 #include "platform.h"
 #include "raylib.h"
 #include "stdio.h"
-#include "string.h"
+// #include "string.h"
 
 // static char asset_buffer[512];
 // static const char* assetPath(const char* filename) {
