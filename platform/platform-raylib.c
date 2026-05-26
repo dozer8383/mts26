@@ -112,7 +112,11 @@ float getFrameTime(void) {
 
 void drawText(const char *text, int originx, int originy, int x, int y, int fontSize, bool centerAlign, float fade, bool contrast) {
     if (fontSize*drawScale <= 10) {
-        DrawText(text,x,y,5,WHITE);
+        int textWidth = MeasureText(text,5);
+	if (centerAlign) { 
+		x -= textWidth/2;
+	}	
+	DrawText(text,originx+x*drawScale,originy+y*drawScale,5,(Color){255*contrast,255*contrast,255*contrast,(int)(fade*255)});
     } else {
         int textWidth = MeasureTextEx(serif,text,fontSize,1).x;
         if (centerAlign) {
