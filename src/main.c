@@ -87,9 +87,9 @@ int main() {
             }
         } else if (gameState == 1) {
             if (season == 0) {
-                growthRate = (-cos(timeInSeason)+1)/(7-fmin(water*0.02,6.5))+(fertilizer*(fertilizer*0.4))*0.002;
+                growthRate = (-cos(timeInSeason)+1)/(7-fmin(water*0.02,6.5))+(fertilizer*fertilizer*0.6)*0.002;
             } else if (season == 1) {
-                growthRate = (sin(timeInSeason/2))/(1-fmin(water*0.04,0.5))+(fertilizer*(fertilizer*0.4))*0.003;
+                growthRate = (sin(timeInSeason/2))/(1-fmin(water*0.04,0.5))+(fertilizer*fertilizer*0.6)*0.003;
             } else if (season == 2) {
                 growthRate = (-cos(timeInSeason)+1)/(10-fmin(water*0.2,9.5));
             } else {

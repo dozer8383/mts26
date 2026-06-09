@@ -13,8 +13,8 @@ add_subdirectory(external/raylib)
 
 # Add the executable
 add_executable(mts26
-    main.c
-    platform/platform-raylib.c
+    src/main.c
+    src/platform/platform-raylib.c
 )
 
 # Link raylib and system libraries
